@@ -1,16 +1,16 @@
-from abc import update_abstractmethods
-from ast import Mod
+# This Python file uses the following encoding: utf-8
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
-import sys, cv2
+import sys, cv2, serial, time
 from PyQt6 import uic
-from mywindow import Ui_MainWindow
+from mainwindow import Ui_MainWindow
+from  pneumaticTest import Ui_PneumaticTest
 from enum import Enum
 
-# This Python file uses the following encoding: utf-8
-import sys
-from PySide6.QtWidgets import QApplication
+
+# Global variables 
+arduino = serial.Serial(port='COM5', baudrate=115200, timeout=.1)
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
@@ -36,11 +36,17 @@ class Mode(Enum):
 
 class MainWindow(QMainWindow, Ui_MainWindow):
   def __init__(self, *args, **kwargs):
+
     # initialize window and load ui
     super(MainWindow, self).__init__(*args, **kwargs)
     uic.loadUi("mainwindow.ui", self)
     self.setWindowTitle("Vine Robot")
     self.setupUi(self)
+
+    # initialize the pneumatic window
+    self.pneumaticTestWindow = QMainWindow()
+    self.ui = Ui_PneumaticTest()
+    self.ui.setupUi(self.pneumaticTestWindow)
 
     # create a custom label for the video feedback
     self.label = QLabel(self)
@@ -61,18 +67,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.object_identified = None
     self.following_object = None
 
-    # Define slots - not needed as of now (access directly)
-    
-
     # establish connections between signals and slots
     self.manual_mode_radioBtn.toggled.connect(lambda:self.setMode(self.manual_mode_radioBtn))
     self.auto_mode_radioBtn.toggled.connect(lambda:self.setMode(self.auto_mode_radioBtn))
+    
 
   # Define Functions
+  # function to set the video 
   @pyqtSlot(QImage)
   def setImage(self, image):
     self.label.setPixmap(QPixmap.fromImage(image))
 
+  # function to set the mode based on the radio button - setter method
   def setMode(self, btn):
     if self.sender().isChecked():
       if self.sender().objectName() == 'auto_mode_radioBtn':
@@ -81,8 +87,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mode = Mode.MANUAL
     print("selected mode ", self.mode)
 
+  # getter method for the mode
   def getMode(self):
     return self.mode
+
+  # Send data to arduino
+  def write_read(self, x):
+    arduino.write(bytes(x, 'utf-8'))
+    time.sleep(0.05)
+    data = arduino.readline()
+    return data
+
+  # Allows user to enter a byte
+  def byte_send(self, num):
+    while True:
+      # num = input("Enter a number: ")  # Taking input from user
+      value = self.write_read(num)
+      print(value)  # printing the value
+
+  # methods for testing the valves 
+  def testValve1(self):
+    valveBtn = self.pneumaticTestWindow.sender()
+    if valveBtn.isChecked():
+      if valveBtn.objectName() == 'Valve1On':
+        self.byte_send(1)
+        print("sent byte to arduino, need one to test it")
+      if valveBtn.objectName() == 'Valve1Off':
+        self.byte_send(2)
+        print("sent byte to arduino, need one to test it")
+
 
 if __name__ == "__main__":
   app = QApplication(sys.argv)

@@ -280,8 +280,47 @@
      <height>24</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuTest">
+    <property name="title">
+     <string>Test</string>
+    </property>
+    <addaction name="actionPneumatics"/>
+    <addaction name="actionMotor"/>
+   </widget>
+   <widget class="QMenu" name="menuControls">
+    <property name="title">
+     <string>Controls</string>
+    </property>
+    <addaction name="actionMain_Controller"/>
+   </widget>
+   <addaction name="menuTest"/>
+   <addaction name="menuControls"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionPneumatics">
+   <property name="text">
+    <string>Pneumatics</string>
+   </property>
+   <property name="statusTip">
+    <string>Test the pneumatic valves</string>
+   </property>
+  </action>
+  <action name="actionMain_Controller">
+   <property name="text">
+    <string>Main Controller</string>
+   </property>
+   <property name="statusTip">
+    <string>Open controller for the vine</string>
+   </property>
+  </action>
+  <action name="actionMotor">
+   <property name="text">
+    <string>Motor</string>
+   </property>
+   <property name="statusTip">
+    <string>Test the motors in the robot</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

@@ -8,8 +8,17 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from pneumaticTest import Ui_PneumaticTest
+
 
 class Ui_MainWindow(object):
+    def openPneumaticWindow(self):
+      self.window =  QtWidgets.QMainWindow()
+      self.ui = Ui_PneumaticTest()
+      self.ui.setupUi(self.window)
+      self.window.show()
+
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 650)
@@ -56,9 +65,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.temp_val_rcvd = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
-        self.temp_val_rcvd.setObjectName("temp_val_rcvd")
-        self.verticalLayout_2.addWidget(self.temp_val_rcvd)
+        self.temp_val_rvcd = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.temp_val_rvcd.setObjectName("temp_val_rvcd")
+        self.verticalLayout_2.addWidget(self.temp_val_rvcd)
         self.humidity_val_rcvd = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
         self.humidity_val_rcvd.setObjectName("humidity_val_rcvd")
         self.verticalLayout_2.addWidget(self.humidity_val_rcvd)
@@ -126,10 +135,27 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
         self.menubar.setObjectName("menubar")
+        self.menuTest = QtWidgets.QMenu(self.menubar)
+        self.menuTest.setObjectName("menuTest")
+        self.menuControls = QtWidgets.QMenu(self.menubar)
+        self.menuControls.setObjectName("menuControls")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.actionPneumatics = QtGui.QAction(MainWindow)
+        self.actionPneumatics.setObjectName("actionPneumatics")
+        self.actionMain_Controller = QtGui.QAction(MainWindow)
+        self.actionMain_Controller.setObjectName("actionMain_Controller")
+        self.actionMotor = QtGui.QAction(MainWindow)
+        self.actionMotor.setObjectName("actionMotor")
+        self.menuTest.addAction(self.actionPneumatics)
+        self.menuTest.addAction(self.actionMotor)
+        self.menuControls.addAction(self.actionMain_Controller)
+        self.menubar.addAction(self.menuTest.menuAction())
+        self.menubar.addAction(self.menuControls.menuAction())
+
+        self.actionPneumatics.triggered.connect(self.openPneumaticWindow)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -151,6 +177,14 @@ class Ui_MainWindow(object):
         self.manual_mode_radioBtn.setText(_translate("MainWindow", "Manual"))
         self.metric_label.setText(_translate("MainWindow", "Metric"))
         self.label_3.setText(_translate("MainWindow", "Value"))
+        self.menuTest.setTitle(_translate("MainWindow", "Test"))
+        self.menuControls.setTitle(_translate("MainWindow", "Controls"))
+        self.actionPneumatics.setText(_translate("MainWindow", "Pneumatics"))
+        self.actionPneumatics.setStatusTip(_translate("MainWindow", "Test the pneumatic valves"))
+        self.actionMain_Controller.setText(_translate("MainWindow", "Main Controller"))
+        self.actionMain_Controller.setStatusTip(_translate("MainWindow", "Open controller for the vine"))
+        self.actionMotor.setText(_translate("MainWindow", "Motor"))
+        self.actionMotor.setStatusTip(_translate("MainWindow", "Test the motors in the robot"))
 
 
 if __name__ == "__main__":

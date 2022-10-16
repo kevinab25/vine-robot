@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>875</width>
     <height>650</height>
    </rect>
   </property>
@@ -26,9 +26,9 @@
    <widget class="QWidget" name="MainWidget" native="true">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>20</x>
       <y>340</y>
-      <width>701</width>
+      <width>831</width>
       <height>251</height>
      </rect>
     </property>
@@ -61,55 +61,23 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QLineEdit" name="temp_label">
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
+         <widget class="QLabel" name="label">
           <property name="text">
            <string>Temperature (C)</string>
           </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="humidity_label">
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Humidity</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
+           <string>Acceleration</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="speed_label">
-          <property name="text">
-           <string>Speed</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="pressure_label">
+         <widget class="QLabel" name="label_4">
           <property name="text">
            <string>Pressure</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="orientation_label">
-          <property name="text">
-           <string>Orientation</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -118,19 +86,28 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLineEdit" name="temp_val_rvcd"/>
+         <widget class="QLineEdit" name="temp_val_rvcd">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="humidity_val_rcvd"/>
+         <widget class="QLineEdit" name="speed_val_rcvd">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="speed_val_rcvd"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="pressure_val_rcvd"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="orient_val_rcvd"/>
+         <widget class="QLineEdit" name="pressure_val_rcvd">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -149,22 +126,16 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QLineEdit" name="obj_ident_label">
+         <widget class="QLabel" name="obj_ident_lbl">
           <property name="text">
            <string>Identified</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="obj_fwing_label">
+         <widget class="QLabel" name="obj_fwing_lbl">
           <property name="text">
            <string>Following</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -173,10 +144,18 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QLineEdit" name="obj_ident_val"/>
+         <widget class="QLineEdit" name="obj_ident_val">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="obj_fwing_val"/>
+         <widget class="QLineEdit" name="obj_fwing_val">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -199,9 +178,9 @@
      <property name="geometry">
       <rect>
        <x>420</x>
-       <y>110</y>
+       <y>120</y>
        <width>241</width>
-       <height>121</height>
+       <height>111</height>
       </rect>
      </property>
      <property name="title">
@@ -269,6 +248,42 @@
       <string>Value</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="ConnectBtn">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>160</y>
+       <width>100</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="port_line">
+     <property name="geometry">
+      <rect>
+       <x>680</x>
+       <y>80</y>
+       <width>141</width>
+       <height>61</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="port_label">
+     <property name="geometry">
+      <rect>
+       <x>730</x>
+       <y>50</y>
+       <width>58</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -276,7 +291,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>875</width>
      <height>24</height>
     </rect>
    </property>
@@ -284,41 +299,32 @@
     <property name="title">
      <string>Test</string>
     </property>
-    <addaction name="actionPneumatics"/>
-    <addaction name="actionMotor"/>
+    <addaction name="debugAction"/>
    </widget>
    <widget class="QMenu" name="menuControls">
     <property name="title">
      <string>Controls</string>
     </property>
-    <addaction name="actionMain_Controller"/>
+    <addaction name="Main_Controller_action"/>
    </widget>
    <addaction name="menuTest"/>
    <addaction name="menuControls"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionPneumatics">
+  <action name="debugAction">
    <property name="text">
-    <string>Pneumatics</string>
+    <string>Debug Window</string>
    </property>
    <property name="statusTip">
     <string>Test the pneumatic valves</string>
    </property>
   </action>
-  <action name="actionMain_Controller">
+  <action name="Main_Controller_action">
    <property name="text">
     <string>Main Controller</string>
    </property>
    <property name="statusTip">
     <string>Open controller for the vine</string>
-   </property>
-  </action>
-  <action name="actionMotor">
-   <property name="text">
-    <string>Motor</string>
-   </property>
-   <property name="statusTip">
-    <string>Test the motors in the robot</string>
    </property>
   </action>
  </widget>

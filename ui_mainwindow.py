@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file '/Users/kevinab25/Development/vine_robot/mainwindow.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.0
 #
@@ -182,13 +182,3 @@ class Ui_MainWindow(object):
         self.debugAction.setStatusTip(_translate("MainWindow", "Test the pneumatic valves"))
         self.Main_Controller_action.setText(_translate("MainWindow", "Main Controller"))
         self.Main_Controller_action.setStatusTip(_translate("MainWindow", "Open controller for the vine"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec())

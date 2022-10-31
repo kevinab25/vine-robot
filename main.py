@@ -1,5 +1,3 @@
-# This Python file uses the following encoding: utf-8
-from concurrent.futures import ThreadPoolExecutor
 from itertools import tee
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
@@ -8,8 +6,9 @@ import sys, cv2, serial, time, datetime, os
 from PyQt6 import uic
 from mainwindow import Ui_MainWindow
 from DebugWindow import Ui_DebugWindow
-from FindPort import Ui_Dialog
+from MainController import Ui_MainController
 from enum import Enum
+from ball_tracking import Tracker
 
 class Thread(QThread):
   changePixmap = pyqtSignal(QImage)
@@ -32,22 +31,6 @@ class Mode(Enum):
   MANUAL = 1
   AUTO = 2
 
-# use this when i have time to figure out
-# else just remove it --> would be nice
-class Form(QDialog, Ui_Dialog):
-  def __init__(self, *args, **kwargs):
-    super(Form, self).__init__(*args, **kwargs)
-    uic.loadUi("FindPort.ui", self)
-    self.setWindowTitle("Arduino Port")
-    self.setupUi(self)
-
-    self.connectBtn.clicked.connect(self.btnClicked)
-
-  def btnClicked(self):
-    self.close()
-    
-
-
 class MainWindow(QMainWindow, Ui_MainWindow):
   def __init__(self, *args, **kwargs):
 
@@ -57,33 +40,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.setWindowTitle("Vine Robot")
     self.setupUi(self)
 
-    # initilaize timer
-    # TODO: fix the timer and thread issue (kev)
-    self.my_timer = QTimer()
-    # self.my_timer.timeout.connect(self.showTemp)
-    self.my_timer.start(500)  # 1 min intervall
+    # Initialize thread pool
+    self.threadpool = QThreadPool()
+    print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
     # initialize the debug window
     self.debugWindow = QMainWindow()
     self.debugUI = Ui_DebugWindow()
     self.debugUI.setupUi(self.debugWindow)
 
+    # initialize controller window
+    self.controller = QMainWindow()
+    self.controllerUI = Ui_MainController()
+    self.controllerUI.setupUi(self.controller)
+
     # create a custom label for the video feedback
     self.label = QLabel(self)
     self.label.move(70, 10)
     self.label.resize(720, 320)
-    th = Thread(self)
-    th.changePixmap.connect(self.setImage)
-    th.start()
+    # th = Thread(self)
+    # th.changePixmap.connect(self.setImage)
+    # th.start()
+    tracker = Tracker(self)
+    tracker.changePixmap.connect(self.setImage)
+    tracker.start()
+    
+    # finally show GUI
     self.show()
-
-    # # initialize arduino with COM5 unless changed
-    # self.arduino = serial.Serial(
-    #     port='COM5',
-    #     baudrate=115200,
-    #     parity=serial.PARITY_NONE,
-    #     stopbits=serial.STOPBITS_ONE,
-    #     bytesize=serial.EIGHTBITS)
 
     ###############################################
     #         initialize fields (slots)
@@ -101,6 +84,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ###############################################
     # Main Window connections
     self.debugAction.triggered.connect(lambda:self.openDebugWindow(self.debugWindow))
+    self.Main_Controller_action.triggered.connect(lambda:self.openControllerWindow(self.controller))
     self.manual_mode_radioBtn.toggled.connect(lambda:self.setMode(self.manual_mode_radioBtn))
     self.auto_mode_radioBtn.toggled.connect(lambda:self.setMode(self.auto_mode_radioBtn))
     self.ConnectBtn.clicked.connect(lambda:self.setUpArduino(self.port_line.text()))
@@ -126,10 +110,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.debugUI.Ball2OffRbtn.toggled.connect(lambda:self.testBall2(self.debugUI.Ball2OffRbtn))
     self.debugUI.Ball3OffRbtn.toggled.connect(lambda:self.testBall3(self.debugUI.Ball3OffRbtn))
     self.debugUI.Ball4OffRbtn.toggled.connect(lambda:self.testBall4(self.debugUI.Ball4OffRbtn))
-    self.debugUI.Ball1PauseBtn.toggled.connect(lambda:self.testBall1Pause(self.debugUI.Ball1PauseBtn))
-    self.debugUI.Ball2PauseBtn.toggled.connect(lambda:self.testBall2Pause(self.debugUI.Ball2PauseBtn))
-    self.debugUI.Ball3PauseBtn.toggled.connect(lambda:self.testBall3Pause(self.debugUI.Ball3PauseBtn))
-    self.debugUI.Ball4PauseBtn.toggled.connect(lambda:self.testBall4Pause(self.debugUI.Ball4PauseBtn))
+    self.debugUI.BVallPause.toggled.connect(lambda:self.testBall1(self.debugUI.BVallPause))
+    self.debugUI.BVallPause_2.toggled.connect(lambda:self.testBall2(self.debugUI.BVallPause_2))
+    self.debugUI.BVallPause_3.toggled.connect(lambda:self.testBall3(self.debugUI.BVallPause_3))
+    self.debugUI.BVallPause_4.toggled.connect(lambda:self.testBall4(self.debugUI.BVallPause_4))
     # Motor buttons
     self.debugUI.Motor1_fwd.toggled.connect(lambda:self.testMotor1(self.debugUI.Motor1_fwd))
     self.debugUI.Motor2_fwd.toggled.connect(lambda:self.testMotor2(self.debugUI.Motor2_fwd))
@@ -137,15 +121,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.debugUI.Motor1_rev.toggled.connect(lambda:self.testMotor1(self.debugUI.Motor1_rev))
     self.debugUI.Motor2_rev.toggled.connect(lambda:self.testMotor2(self.debugUI.Motor2_rev))
     self.debugUI.Motor3_rev.toggled.connect(lambda:self.testMotor3(self.debugUI.Motor3_rev))
-    self.debugUI.Motor1_speed.editingFinished.connect(lambda:self.testMotorSpeed1(self.debugUI.Motor1_speed.text))
-    self.debugUI.Motor2_speed.editingFinished.connect(lambda:self.testMotorSpeed2(self.debugUI.Motor2_speed.text))
-    self.debugUI.Motor3_speed.editingFinished.connect(lambda:self.testMotorSpeed3(self.debugUI.Motor3_speed.text))
+    self.debugUI.Motor1Off.toggled.connect(lambda:self.testMotor1(self.debugUI.Motor1Off))
+    self.debugUI.Motor2Off.toggled.connect(lambda:self.testMotor2(self.debugUI.Motor2Off))
+    self.debugUI.Motor3Off.toggled.connect(lambda:self.testMotor3(self.debugUI.Motor3Off))
+
+
+    self.debugUI.send_speed1.clicked.connect(lambda:self.sendMotorSpeed1(self.debugUI.Motor1_speed.text()))
+    self.debugUI.send_speed2.clicked.connect(lambda:self.sendMotorSpeed2(self.debugUI.Motor2_speed.text()))
+    self.debugUI.send_speed3.clicked.connect(lambda:self.sendMotorSpeed3(self.debugUI.Motor3_speed.text()))
 
   ###############################################
   #            Define Functions
   ###############################################
-  # function to open the debug window
+  # functions to open the debug and controller window
   def openDebugWindow(self, window):
+    window.show()
+
+  def openControllerWindow(self, window):
     window.show()
 
   # initialize arduino by user input
@@ -158,6 +150,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS
     )
+    self.my_timer = QTimer()
+    self.my_timer.timeout.connect(self.showTemp)
+    self.my_timer.timeout.connect(self.showAcc)
+    self.my_timer.timeout.connect(self.showPressure)
+    self.my_timer.start(3000)  # 1 min intervall
+
+    # worker = Worker(self.showTemp, self.showAcc)
+    # self.threadpool.start(worker)
 
   # function to set the video 
   @pyqtSlot(QImage)
@@ -187,27 +187,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     line = self.arduino.readline().decode('utf-8')
     splitLine = line.split()
 
-    temp = splitLine[0:1]
+    temp = splitLine[0]
+    print(splitLine)
     #temp = "24.55"
-    acc = splitLine[1:2]
-    pressure1 = splitLine[2:3]
-    pressure2 = splitLine[3:4]
-    pressure3 = splitLine[4:5]
-    pressure4 = splitLine[5:6]
+    acc = splitLine[1]
+    pressure1 = splitLine[2]
+    pressure2 = splitLine[3]
+    pressure3 = splitLine[4]
+    pressure4 = splitLine[5]
+    pressure = []
+    pressure.append(pressure1)
+    pressure.append(pressure2)
+    pressure.append(pressure3)
+    pressure.append(pressure4)
+    # print("pressure ", pressure)
 
     if int == 1:
         return str(temp)
     if int == 2:
         return str(acc)
     if int == 3:
-        return pressure1
+        return pressure
     #add rest
 
   # show values from the pcb in display
   # TODO: might have to put these in a different thread
-  def showTemp(self):
-    temperature = self.readByte(1)
-    self.temp_val_rvcd.setText(temperature)
+  
 
   def showAcc(self):
     accel = self.readByte(2)
@@ -215,7 +220,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
   def showPressure(self):
     pressure = self.readByte(3)
-    self.pressure_val_rcvd.setText(pressure)
+    self.pressure_val_rcvd.setText(pressure[0])
+    self.pressure_val_rcvd_2.setText(pressure[1])
+    self.pressure_val_rcvd_3.setText(pressure[2])
+    self.pressure_val_rcvd_4.setText(pressure[3])
+
+  def showTemp(self):
+    temperature = self.readByte(1)
+    self.temp_val_rvcd.setText(temperature)
 
 
   # methods for testing the pneumatic valves
@@ -228,149 +240,137 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         print("sent byte to arduino: valve 1 on")
       if btn.objectName() == 'Valve1Off':
         self.sendByte("2\r")
-        print("sent byte to arduino: valve 1 off")
+        # print("sent byte to arduino: valve 1 off")
 
   def testValve2(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Valve2On':
-        self.sendByte("1\r")
+        self.sendByte("3\r")
         print("sent byte to arduino: valve 2 on")
       if btn.objectName() == 'Valve2Off':
-        self.sendByte("2\r")
-        print("sent byte to arduino: valve 2 off")
+        self.sendByte("4\r")
+        # print("sent byte to arduino: valve 2 off")
 
   def testValve3(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Valve3On':
-        self.sendByte("1\r")
+        self.sendByte("5\r")
         print("sent byte to arduino: valve 3 on")
       if btn.objectName() == 'Valve3Off':
-        self.sendByte("2\r")
-        print("sent byte to arduino: valve 3 off")
+        self.sendByte("6\r")
+        # print("sent byte to arduino: valve 3 off")
 
   def testValve4(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Valve4On':
-        self.sendByte("1\r")
+        self.sendByte("7\r")
         print("sent byte to arduino: valve 4 on")
       if btn.objectName() == 'Valve4Off':
-        self.sendByte("2\r")
-        print("sent byte to arduino: valve 4 off")
+        self.sendByte("8\r")
+        # print("sent byte to arduino: valve 4 off")
 
   def testValve5(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Valve5On':
-        self.sendByte("1\r")
+        self.sendByte("9\r")
         print("sent byte to arduino: valve 5 on")
       if btn.objectName() == 'Valve5Off':
-        self.sendByte("2\r")
-        print("sent byte to arduino: valve 5 off")
+        self.sendByte("10\r")
+        # print("sent byte to arduino: valve 5 off")
 
   def testBall1(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Ball1OnRbtn':
-        self.sendByte("")
+        self.sendByte("11\r")
       if btn.objectName() == 'Ball1OffRbtn':
-        self.sendByte("")
+        self.sendByte("12\r")
+      if btn.objectName() == 'BVallPause':
+        self.sendByte("13\r")
+        print("Ball valve 1 paused")
 
   def testBall2(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Ball2OnRbtn':
-        self.sendByte("")
+        self.sendByte("14\r")
       if btn.objectName() == 'Ball2OffRbtn':
-        self.sendByte("")
+        self.sendByte("15\r")
+      if btn.objectName() == 'BVallPause_2':
+        self.sendByte("16\r")
+        print("Ball valve 2 paused")
     
   def testBall3(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Ball3OnRbtn':
-        self.sendByte("")
+        self.sendByte("17\r")
       if btn.objectName() == 'Ball3OffRbtn':
-        self.sendByte("")
+        self.sendByte("18\r")
+      if btn.objectName() == 'BVallPause_3':
+        self.sendByte("19\r")
+        print("Ball valve 3 paused")
 
   def testBall4(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Ball4OnRbtn':
-        self.sendByte("")
+        self.sendByte("20\r")
       if btn.objectName() == 'Ball4OffRbtn':
-        self.sendByte("")
-
-  def testBall1Pause(self, btn):
-    if btn.objectName() == 'Ball1PauseBtn':
-      if btn.isChecked() == True:
-        self.sendByte("")
-        print("Ball valve 1 paused")
-      else:
-        self.sendByte("")
-        print("Ball valve 1 continuing..")
-
-  def testBall2Pause(self, btn):
-    if btn.objectName() == 'Ball2PauseBtn':
-      if btn.isChecked() == True:
-        self.sendByte("")
-        print("Ball valve 2 paused")
-      else:
-        self.sendByte("")
-        print("Ball valve 2 continuing..")
-
-  def testBall3Pause(self, btn):
-    if btn.objectName() == 'Ball3PauseBtn':
-      if btn.isChecked() == True:
-        self.sendByte("")
-        print("Ball valve 3 paused")
-      else:
-        self.sendByte("")
-        print("Ball valve 3 continuing..")
-
-  def testBall4Pause(self, btn):
-    if btn.objectName() == 'Ball4PauseBtn':
-      if btn.isChecked() == True:
-        self.sendByte("")
+        self.sendByte("21\r")
+      if btn.objectName() == 'BVallPause_4':
+        self.sendByte("22\r")
         print("Ball valve 4 paused")
-      else:
-        self.sendByte("")
-        print("Ball valve 4 continuing..")
 
   def testMotor1(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Motor1_fwd':
-        self.sendByte("")
+        self.sendByte("27\r")
       if btn.objectName() == 'Motor1_rev':
-        self.sendByte("")
+        self.sendByte("28\r")
+      # add reverse button -->29
+      if btn.objectName() == 'Motor1Off':
+        self.sendByte("29\r")
 
   def testMotor2(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Motor2_fwd':
-        self.sendByte("")
+        self.sendByte("30\r")
       if btn.objectName() == 'Motor2_rev':
-        self.sendByte("")
+        self.sendByte("31\r")
+        #  off button --> 32
+      if btn.objectName() == 'Motor2Off':
+        self.sendByte("32\r")
 
   def testMotor3(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
       if btn.objectName() == 'Motor3_fwd':
-        self.sendByte("")
+        self.sendByte("33\r")
       if btn.objectName() == 'Motor3_rev':
-        self.sendByte("")
+        self.sendByte("34\r")
+        #  off button --> 35
+      if btn.objectName() == 'Motor3Off':
+        self.sendByte("35\r")
 
 # TODO: check how you want to do this and what it is that you need to send
-  def testMotorSpeed1(self, txt):
-    self.sendByte(txt)
-    print("motor speed: ", txt)
-  def testMotorSpeed2(self, txt):
-    self.sendByte(txt)
-  def testMotorSpeed3(self, txt):
-    self.sendByte(txt)
+  def sendMotorSpeed1(self, txt):
+    self.sendByte(f"{txt}\r")
+    print(f"sent this speed: {txt}")
+  
+  def sendMotorSpeed2(self, txt):
+    self.sendByte(f"{txt}\r")
+    print(f"sent this speed: {txt}")
 
+  def sendMotorSpeed3(self, txt):
+    self.sendByte(f"{txt}\r")
+    print(f"sent this speed: {txt}")
 
 if __name__ == "__main__":
   app = QApplication(sys.argv)

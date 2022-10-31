@@ -178,20 +178,23 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="2" column="0">
-      <widget class="QLabel" name="BV3lbl">
+     <item row="0" column="2">
+      <widget class="QRadioButton" name="Ball1OffRbtn">
        <property name="text">
-        <string>Valve 3</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QRadioButton" name="Ball1OnRbtn">
-       <property name="text">
-        <string>On</string>
+        <string>Close</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_9</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QRadioButton" name="Ball3OffRbtn">
+       <property name="text">
+        <string>Close</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_11</string>
        </attribute>
       </widget>
      </item>
@@ -202,28 +205,24 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QRadioButton" name="Ball1OffRbtn">
+     <item row="0" column="1">
+      <widget class="QRadioButton" name="Ball1OnRbtn">
        <property name="text">
-        <string>Off</string>
+        <string>Open</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_9</string>
        </attribute>
       </widget>
      </item>
-     <item row="0" column="3">
-      <widget class="QCheckBox" name="Ball1PauseBtn">
+     <item row="1" column="2">
+      <widget class="QRadioButton" name="Ball2OffRbtn">
        <property name="text">
-        <string>Pause</string>
+        <string>Close</string>
        </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="BV2lbl">
-       <property name="text">
-        <string>Valve 2</string>
-       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_10</string>
+       </attribute>
       </widget>
      </item>
      <item row="3" column="0">
@@ -233,85 +232,98 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="BV3lbl">
+       <property name="text">
+        <string>Valve 3</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
       <widget class="QRadioButton" name="Ball2OnRbtn">
        <property name="text">
-        <string>On</string>
+        <string>Open</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_10</string>
-       </attribute>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QRadioButton" name="Ball3OnRbtn">
-       <property name="text">
-        <string>On</string>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup_11</string>
        </attribute>
       </widget>
      </item>
      <item row="3" column="1">
       <widget class="QRadioButton" name="Ball4OnRbtn">
        <property name="text">
-        <string>On</string>
+        <string>Open</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_12</string>
        </attribute>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QRadioButton" name="Ball2OffRbtn">
+     <item row="2" column="1">
+      <widget class="QRadioButton" name="Ball3OnRbtn">
        <property name="text">
-        <string>Off</string>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup_10</string>
-       </attribute>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QRadioButton" name="Ball3OffRbtn">
-       <property name="text">
-        <string>Off</string>
+        <string>Open</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_11</string>
        </attribute>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="BV2lbl">
+       <property name="text">
+        <string>Valve 2</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="2">
       <widget class="QRadioButton" name="Ball4OffRbtn">
        <property name="text">
-        <string>Off</string>
+        <string>Close</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_12</string>
        </attribute>
       </widget>
      </item>
-     <item row="1" column="3">
-      <widget class="QCheckBox" name="Ball2PauseBtn">
+     <item row="0" column="3">
+      <widget class="QRadioButton" name="BVallPause">
        <property name="text">
         <string>Pause</string>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_9</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QRadioButton" name="BVallPause_2">
+       <property name="text">
+        <string>Pause</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_10</string>
+       </attribute>
       </widget>
      </item>
      <item row="2" column="3">
-      <widget class="QCheckBox" name="Ball3PauseBtn">
+      <widget class="QRadioButton" name="BVallPause_3">
        <property name="text">
         <string>Pause</string>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_11</string>
+       </attribute>
       </widget>
      </item>
      <item row="3" column="3">
-      <widget class="QCheckBox" name="Ball4PauseBtn">
+      <widget class="QRadioButton" name="BVallPause_4">
        <property name="text">
         <string>Pause</string>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_12</string>
+       </attribute>
       </widget>
      </item>
     </layout>
@@ -334,22 +346,35 @@
      <rect>
       <x>420</x>
       <y>50</y>
-      <width>391</width>
+      <width>431</width>
       <height>191</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QLabel" name="Motor1_label">
+     <item row="2" column="2">
+      <widget class="QRadioButton" name="Motor3_rev">
        <property name="text">
-        <string>Motor 1</string>
+        <string>Reverse</string>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_8</string>
+       </attribute>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="Motor2_label">
        <property name="text">
         <string>Motor 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QLineEdit" name="Motor1_speed">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -360,30 +385,20 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QRadioButton" name="Motor1_rev">
+     <item row="1" column="2">
+      <widget class="QRadioButton" name="Motor2_rev">
        <property name="text">
         <string>Reverse</string>
        </property>
        <attribute name="buttonGroup">
-        <string notr="true">buttonGroup_6</string>
+        <string notr="true">buttonGroup_7</string>
        </attribute>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QRadioButton" name="Motor1_fwd">
+     <item row="0" column="5">
+      <widget class="QPushButton" name="send_speed1">
        <property name="text">
-        <string>Forward</string>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup_6</string>
-       </attribute>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QLineEdit" name="Motor1_speed">
-       <property name="readOnly">
-        <bool>false</bool>
+        <string>Ok</string>
        </property>
       </widget>
      </item>
@@ -397,6 +412,13 @@
        </attribute>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="Motor1_label">
+       <property name="text">
+        <string>Motor 1</string>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="1">
       <widget class="QRadioButton" name="Motor3_fwd">
        <property name="text">
@@ -407,38 +429,88 @@
        </attribute>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QRadioButton" name="Motor2_rev">
+     <item row="2" column="5">
+      <widget class="QPushButton" name="send_speed3">
+       <property name="text">
+        <string>Ok</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLineEdit" name="Motor2_speed">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QRadioButton" name="Motor1_fwd">
+       <property name="text">
+        <string>Forward</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_6</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QRadioButton" name="Motor1_rev">
        <property name="text">
         <string>Reverse</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_6</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <widget class="QLineEdit" name="Motor3_speed">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5">
+      <widget class="QPushButton" name="send_speed2">
+       <property name="text">
+        <string>Ok</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QRadioButton" name="Motor1Off">
+       <property name="text">
+        <string>Off</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_6</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QRadioButton" name="Motor2Off">
+       <property name="text">
+        <string>Off</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_7</string>
        </attribute>
       </widget>
      </item>
-     <item row="2" column="2">
-      <widget class="QRadioButton" name="Motor3_rev">
+     <item row="2" column="3">
+      <widget class="QRadioButton" name="Motor3Off">
        <property name="text">
-        <string>Reverse</string>
+        <string>Off</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup_8</string>
        </attribute>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QLineEdit" name="Motor2_speed">
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QLineEdit" name="Motor3_speed">
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
       </widget>
      </item>
     </layout>
@@ -476,7 +548,7 @@
      <x>0</x>
      <y>0</y>
      <width>1035</width>
-     <height>36</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -485,17 +557,16 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_5"/>
-  <buttongroup name="buttonGroup"/>
-  <buttongroup name="buttonGroup_3"/>
-  <buttongroup name="buttonGroup_4"/>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_6"/>
   <buttongroup name="buttonGroup_7"/>
   <buttongroup name="buttonGroup_8"/>
+  <buttongroup name="buttonGroup_3"/>
   <buttongroup name="buttonGroup_9"/>
-  <buttongroup name="buttonGroup_10"/>
-  <buttongroup name="buttonGroup_11"/>
   <buttongroup name="buttonGroup_12"/>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup_11"/>
+  <buttongroup name="buttonGroup_4"/>
+  <buttongroup name="buttonGroup_5"/>
+  <buttongroup name="buttonGroup_10"/>
  </buttongroups>
 </ui>

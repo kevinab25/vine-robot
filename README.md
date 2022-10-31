@@ -10,12 +10,22 @@ in our Senior Design Project:
 
 # How to install and use
 Dependencies: (check all of this at the end)
-pip install PyQt5
+pip install PyQt6
 sudo pip3 install imutils
 sudo pip3 install --upgrade scikit-image
-
+pip install opencv-contrib-python
 
 # Structure
+--Components--
+OpenCV:
+How it works?
 
+Motors:
+
+Pneumatics:
+
+Ball Valves:
+
+--Navigating GUI--
 # Contributors 
 Kevin Abreu-Aguila

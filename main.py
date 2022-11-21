@@ -1,7 +1,8 @@
-from itertools import tee
+from PyQt6.Qt6 import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
+from PyQt6.QtGui import QKeyEvent
 import sys, cv2, serial, time, datetime, os
 from PyQt6 import uic
 from mainwindow import Ui_MainWindow
@@ -9,23 +10,6 @@ from DebugWindow import Ui_DebugWindow
 from MainController import Ui_MainController
 from enum import Enum
 from ball_tracking import Tracker
-
-class Thread(QThread):
-  changePixmap = pyqtSignal(QImage)
-
-  def run(self):
-      cap = cv2.VideoCapture(0)
-      while True:
-          ret, frame = cap.read()
-          if ret:
-              # https://stackoverflow.com/a/55468544/6622587
-              rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-              h, w, ch = rgbImage.shape
-              bytesPerLine = ch * w
-              qformat = QImage.Format.Format_RGB888
-              convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine, qformat)
-              p = convertToQtFormat.scaled(640, 480, Qt.AspectRatioMode.KeepAspectRatio)
-              self.changePixmap.emit(p)
 
 class Mode(Enum):
   MANUAL = 1
@@ -56,11 +40,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # create a custom label for the video feedback
     self.label = QLabel(self)
-    self.label.move(70, 10)
+    self.label.move(100, 10)
     self.label.resize(720, 320)
-    # th = Thread(self)
-    # th.changePixmap.connect(self.setImage)
-    # th.start()
     tracker = Tracker(self)
     tracker.changePixmap.connect(self.setImage)
     tracker.start()
@@ -91,6 +72,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     # Test Window connections
     # Pneumatic Buttons
+    self.debugUI.closeAll.clicked.connect(lambda:self.closeAllValves(self.debugUI.closeAll))
     self.debugUI.Valve1On.toggled.connect(lambda:self.testValve1(self.debugUI.Valve1On))
     self.debugUI.Valve2On.toggled.connect(lambda:self.testValve2(self.debugUI.Valve2On))
     self.debugUI.Valve3On.toggled.connect(lambda:self.testValve3(self.debugUI.Valve3On))
@@ -102,18 +84,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.debugUI.Valve4Off.toggled.connect(lambda:self.testValve4(self.debugUI.Valve4Off))
     self.debugUI.Valve5Off.toggled.connect(lambda:self.testValve5(self.debugUI.Valve5Off))
     # Ball valve buttons
+    # On Buttons
     self.debugUI.Ball1OnRbtn.toggled.connect(lambda:self.testBall1(self.debugUI.Ball1OnRbtn))
     self.debugUI.Ball2OnRbtn.toggled.connect(lambda:self.testBall2(self.debugUI.Ball2OnRbtn))
     self.debugUI.Ball3OnRbtn.toggled.connect(lambda:self.testBall3(self.debugUI.Ball3OnRbtn))
     self.debugUI.Ball4OnRbtn.toggled.connect(lambda:self.testBall4(self.debugUI.Ball4OnRbtn))
+    self.debugUI.Ball5OnRbtn.toggled.connect(lambda:self.testBall5(self.debugUI.Ball5OnRbtn))
+    self.debugUI.Ball6OnRbtn.toggled.connect(lambda:self.testBall6(self.debugUI.Ball6OnRbtn))
+    self.debugUI.Ball7OnRbtn.toggled.connect(lambda:self.testBall7(self.debugUI.Ball7OnRbtn))
+    self.debugUI.Ball8OnRbtn.toggled.connect(lambda:self.testBall8(self.debugUI.Ball8OnRbtn))
+    # Off Buttons
     self.debugUI.Ball1OffRbtn.toggled.connect(lambda:self.testBall1(self.debugUI.Ball1OffRbtn))
     self.debugUI.Ball2OffRbtn.toggled.connect(lambda:self.testBall2(self.debugUI.Ball2OffRbtn))
     self.debugUI.Ball3OffRbtn.toggled.connect(lambda:self.testBall3(self.debugUI.Ball3OffRbtn))
     self.debugUI.Ball4OffRbtn.toggled.connect(lambda:self.testBall4(self.debugUI.Ball4OffRbtn))
+    self.debugUI.Ball5OffRbtn.toggled.connect(lambda:self.testBall5(self.debugUI.Ball5OffRbtn))
+    self.debugUI.Ball6OffRbtn.toggled.connect(lambda:self.testBall6(self.debugUI.Ball6OffRbtn))
+    self.debugUI.Ball7OffRbtn.toggled.connect(lambda:self.testBall7(self.debugUI.Ball7OffRbtn))
+    self.debugUI.Ball8OffRbtn.toggled.connect(lambda:self.testBall8(self.debugUI.Ball8OffRbtn))
+    # Pause Buttons 
     self.debugUI.BVallPause.toggled.connect(lambda:self.testBall1(self.debugUI.BVallPause))
     self.debugUI.BVallPause_2.toggled.connect(lambda:self.testBall2(self.debugUI.BVallPause_2))
     self.debugUI.BVallPause_3.toggled.connect(lambda:self.testBall3(self.debugUI.BVallPause_3))
     self.debugUI.BVallPause_4.toggled.connect(lambda:self.testBall4(self.debugUI.BVallPause_4))
+    self.debugUI.BVallPause_5.toggled.connect(lambda:self.testBall5(self.debugUI.BVallPause_5))
+    self.debugUI.BVallPause_6.toggled.connect(lambda:self.testBall6(self.debugUI.BVallPause_6))
+    self.debugUI.BVallPause_7.toggled.connect(lambda:self.testBall7(self.debugUI.BVallPause_7))
+    self.debugUI.BVallPause_8.toggled.connect(lambda:self.testBall8(self.debugUI.BVallPause_8))
     # Motor buttons
     self.debugUI.Motor1_fwd.toggled.connect(lambda:self.testMotor1(self.debugUI.Motor1_fwd))
     self.debugUI.Motor2_fwd.toggled.connect(lambda:self.testMotor2(self.debugUI.Motor2_fwd))
@@ -156,8 +153,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.my_timer.timeout.connect(self.showPressure)
     self.my_timer.start(3000)  # 1 min intervall
 
-    # worker = Worker(self.showTemp, self.showAcc)
-    # self.threadpool.start(worker)
+    # Set box read only
+    # self.debugUI
+    # close all the valves on connect
+    self.sendByte("70\r")
+
 
   # function to set the video 
   @pyqtSlot(QImage)
@@ -211,9 +211,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     #add rest
 
   # show values from the pcb in display
-  # TODO: might have to put these in a different thread
-  
-
   def showAcc(self):
     accel = self.readByte(2)
     self.speed_val_rcvd.setText(accel)
@@ -229,9 +226,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     temperature = self.readByte(1)
     self.temp_val_rvcd.setText(temperature)
 
+  # methods for key-press events
+  # TODO: fill in with the equations for steering 
+  def steer_left(self):
+    print("going left")
+
+  def steer_fwd(self):
+    print('going forward')
+
+  def retract(self):
+    print('retracting')
+
+  def steer_right(self):
+    print('going right')
+
+  def halt(self):
+    print('stopping')
+
+  def keyPressEvent(self, event: QKeyEvent) -> None:
+    print(event.text())
+    if event.text() == 'a':
+      self.steer_left()
+    elif event.text() == 'w':
+      self.steer_fwd()
+    elif event.text() == 's':
+      self.retract()
+    elif event.text() == 'd':
+      self.steer_right()
+    elif event.text() == 'h':
+      self.halt()
+  
 
   # methods for testing the pneumatic valves
-  # TODO: M change the byte you want to send inside the sendByte() 
   def testValve1(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():
@@ -326,6 +352,56 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sendByte("22\r")
         print("Ball valve 4 paused")
 
+  def testBall5(self, rbtn):
+    btn = self.debugWindow.sender()
+    if btn.isChecked():
+      if btn.objectName() == 'Ball5OnRbtn':
+        self.sendByte("36\r")
+      if btn.objectName() == 'Ball5OffRbtn':
+        self.sendByte("37\r")
+      if btn.objectName() == 'BVallPause_5':
+        self.sendByte("38\r")
+        print("Ball valve 5 paused")
+
+  def testBall6(self, rbtn):
+    btn = self.debugWindow.sender()
+    if btn.isChecked():
+      if btn.objectName() == 'Ball6OnRbtn':
+        self.sendByte("39\r")
+      if btn.objectName() == 'Ball6OffRbtn':
+        self.sendByte("40\r")
+      if btn.objectName() == 'BVallPause_6':
+        self.sendByte("41\r")
+        print("Ball valve 6 paused")
+
+  def testBall7(self, rbtn):
+    btn = self.debugWindow.sender()
+    if btn.isChecked():
+      if btn.objectName() == 'Ball7OnRbtn':
+        self.sendByte("42\r")
+      if btn.objectName() == 'Ball7OffRbtn':
+        self.sendByte("43\r")
+      if btn.objectName() == 'BVallPause_7':
+        self.sendByte("44\r")
+        print("Ball valve 7 paused")
+
+  def testBall8(self, rbtn):
+    btn = self.debugWindow.sender()
+    if btn.isChecked():
+      if btn.objectName() == 'Ball8OnRbtn':
+        self.sendByte("45\r")
+      if btn.objectName() == 'Ball8OffRbtn':
+        self.sendByte("46\r")
+      if btn.objectName() == 'BVallPause_8':
+        self.sendByte("47\r")
+        print("Ball valve 8 paused")
+
+  def closeAllValves(self, rbtn):
+    print("Trying to close all")
+    self.sendByte("70\r")
+    print("closed all the valves")
+
+# Methods for testing the motors 
   def testMotor1(self, rbtn):
     btn = self.debugWindow.sender()
     if btn.isChecked():

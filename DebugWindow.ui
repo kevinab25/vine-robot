@@ -201,7 +201,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="BV1lbl">
        <property name="text">
-        <string>Valve 1</string>
+        <string>Inflate 1</string>
        </property>
       </widget>
      </item>
@@ -228,14 +228,14 @@
      <item row="3" column="0">
       <widget class="QLabel" name="BV4lbl">
        <property name="text">
-        <string>Valve 4</string>
+        <string>Inflate 4</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="BV3lbl">
        <property name="text">
-        <string>Valve 3</string>
+        <string>Inflate 3</string>
        </property>
       </widget>
      </item>
@@ -272,7 +272,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="BV2lbl">
        <property name="text">
-        <string>Valve 2</string>
+        <string>Inflate 2</string>
        </property>
       </widget>
      </item>
@@ -541,6 +541,180 @@
      <string>Speed</string>
     </property>
    </widget>
+   <widget class="QWidget" name="gridLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>300</y>
+      <width>311</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="2">
+      <widget class="QRadioButton" name="Ball5OffRbtn">
+       <property name="text">
+        <string>Close</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QRadioButton" name="Ball7OffRbtn">
+       <property name="text">
+        <string>Close</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_14</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="BV5lbl">
+       <property name="text">
+        <string>Exhaust 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QRadioButton" name="Ball5OnRbtn">
+       <property name="text">
+        <string>Open</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QRadioButton" name="Ball6OffRbtn">
+       <property name="text">
+        <string>Close</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_13</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="BV8lbl">
+       <property name="text">
+        <string>Exhaust 4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="BV7lbl">
+       <property name="text">
+        <string>Exhaust 3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QRadioButton" name="Ball6OnRbtn">
+       <property name="text">
+        <string>Open</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_13</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QRadioButton" name="Ball8OnRbtn">
+       <property name="text">
+        <string>Open</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_15</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QRadioButton" name="Ball7OnRbtn">
+       <property name="text">
+        <string>Open</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_14</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="BV6lbl">
+       <property name="text">
+        <string>Exhaust 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QRadioButton" name="Ball8OffRbtn">
+       <property name="text">
+        <string>Close</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_15</string>
+       </attribute>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QRadioButton" name="BVallPause_5">
+       <property name="text">
+        <string>Pause</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QRadioButton" name="BVallPause_6">
+       <property name="text">
+        <string>Pause</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QRadioButton" name="BVallPause_7">
+       <property name="text">
+        <string>Pause</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QRadioButton" name="BVallPause_8">
+       <property name="text">
+        <string>Pause</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="Ball_valve_label_2">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>280</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ball Valves</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="closeAll">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>480</y>
+      <width>100</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Close All </string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -548,7 +722,7 @@
      <x>0</x>
      <y>0</y>
      <width>1035</width>
-     <height>22</height>
+     <height>36</height>
     </rect>
    </property>
   </widget>
@@ -557,16 +731,20 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_6"/>
-  <buttongroup name="buttonGroup_7"/>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup_4"/>
+  <buttongroup name="buttonGroup_10"/>
   <buttongroup name="buttonGroup_8"/>
   <buttongroup name="buttonGroup_3"/>
+  <buttongroup name="buttonGroup_6"/>
   <buttongroup name="buttonGroup_9"/>
-  <buttongroup name="buttonGroup_12"/>
-  <buttongroup name="buttonGroup_2"/>
-  <buttongroup name="buttonGroup_11"/>
-  <buttongroup name="buttonGroup_4"/>
   <buttongroup name="buttonGroup_5"/>
-  <buttongroup name="buttonGroup_10"/>
+  <buttongroup name="buttonGroup_12"/>
+  <buttongroup name="buttonGroup_11"/>
+  <buttongroup name="buttonGroup_7"/>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_13"/>
+  <buttongroup name="buttonGroup_14"/>
+  <buttongroup name="buttonGroup_15"/>
  </buttongroups>
 </ui>

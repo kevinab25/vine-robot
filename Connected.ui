@@ -16,7 +16,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>40</x>
      <y>30</y>
      <width>321</width>
      <height>31</height>
@@ -30,30 +30,23 @@
     </font>
    </property>
    <property name="text">
-    <string>Enter Arduino Port:</string>
+    <string>Connected to Worm</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="port_val">
+  <widget class="QPushButton" name="OkBtn">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>80</y>
-     <width>231</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="connectBtn">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>121</y>
+     <x>140</x>
+     <y>100</y>
      <width>121</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Connect</string>
+    <string>OK</string>
    </property>
   </widget>
  </widget>

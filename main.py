@@ -8,8 +8,10 @@ from PyQt6 import uic
 from mainwindow import Ui_MainWindow
 from DebugWindow import Ui_DebugWindow
 from MainController import Ui_MainController
+from Connected import Ui_Dialog
 from enum import Enum
 from ball_tracking import Tracker
+from camera import Camera
 
 class Mode(Enum):
   MANUAL = 1
@@ -38,13 +40,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.controllerUI = Ui_MainController()
     self.controllerUI.setupUi(self.controller)
 
+    # initialize Connected window
+    self.connectedWindow = QDialog()
+    self.connectedUI = Ui_Dialog()
+    self.connectedUI.setupUi(self.connectedWindow)
+
     # create a custom label for the video feedback
     self.label = QLabel(self)
     self.label.move(100, 10)
     self.label.resize(720, 320)
-    tracker = Tracker(self)
-    tracker.changePixmap.connect(self.setImage)
-    tracker.start()
+    # initialize both the tracker and the regular camera
+    self.tracker = Tracker(self)
+    self.tracker.changePixmap.connect(self.setImage)
+    self.camera = Camera(self)
+    self.camera.changePixmap.connect(self.setImage)
+    self.camera.start()
     
     # finally show GUI
     self.show()
@@ -52,13 +62,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ###############################################
     #         initialize fields (slots)
     ###############################################
-    self.mode = None                # change to manual after testing
+    self.mode = Mode.MANUAL                # change to manual after testing
     self.temperature = None
     self.speed = None
     self.pressure = None
     self.orientation = None
     self.object_identified = None
     self.following_object = None
+    self.pressure = []
+    self.maintCheck = None
 
     ###############################################
     #        connect signals and slots
@@ -69,7 +81,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.manual_mode_radioBtn.toggled.connect(lambda:self.setMode(self.manual_mode_radioBtn))
     self.auto_mode_radioBtn.toggled.connect(lambda:self.setMode(self.auto_mode_radioBtn))
     self.ConnectBtn.clicked.connect(lambda:self.setUpArduino(self.port_line.text()))
-    
+    self.ConnectBtn.clicked.connect(lambda:self.openConnectedDialog(self.connectedWindow))
+    self.connectedUI.OkBtn.clicked.connect(lambda:self.closeDialog(self.connectedWindow))
+
     # Test Window connections
     # Pneumatic Buttons
     self.debugUI.closeAll.clicked.connect(lambda:self.closeAllValves(self.debugUI.closeAll))
@@ -130,12 +144,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
   ###############################################
   #            Define Functions
   ###############################################
+
   # functions to open the debug and controller window
   def openDebugWindow(self, window):
     window.show()
 
   def openControllerWindow(self, window):
     window.show()
+
+  def openConnectedDialog(self, window):
+    window.show()
+
+  def closeDialog(self, window):
+    window.close()
 
   # initialize arduino by user input
   def setUpArduino(self, line):
@@ -154,7 +175,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.my_timer.start(3000)  # 1 min intervall
 
     # Set box read only
-    # self.debugUI
+    self.port_line.setReadOnly(True)
     # close all the valves on connect
     self.sendByte("70\r")
 
@@ -169,9 +190,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     if self.sender().isChecked():
       if self.sender().objectName() == 'auto_mode_radioBtn':
         self.mode = Mode.AUTO
+
       if self.sender().objectName() == 'manual_mode_radioBtn':
         self.mode = Mode.MANUAL
     print("selected mode ", self.mode)
+
+
 
   # getter method for the mode
   def getMode(self):
@@ -195,11 +219,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     pressure2 = splitLine[3]
     pressure3 = splitLine[4]
     pressure4 = splitLine[5]
-    pressure = []
-    pressure.append(pressure1)
-    pressure.append(pressure2)
-    pressure.append(pressure3)
-    pressure.append(pressure4)
+    self.pressure = []
+    self.pressure.append(pressure1)
+    self.pressure.append(pressure2)
+    self.pressure.append(pressure3)
+    self.pressure.append(pressure4)
     # print("pressure ", pressure)
 
     if int == 1:
@@ -207,7 +231,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     if int == 2:
         return str(acc)
     if int == 3:
-        return pressure
+        return self.pressure
     #add rest
 
   # show values from the pcb in display
@@ -230,18 +254,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
   # TODO: fill in with the equations for steering 
   def steer_left(self):
     print("going left")
+    self.sendByte("93\r")
 
   def steer_fwd(self):
     print('going forward')
+    self.sendByte("90\r")
 
   def retract(self):
     print('retracting')
 
   def steer_right(self):
     print('going right')
+    self.sendByte("92\r")
 
   def halt(self):
     print('stopping')
+    self.sendByte("91\r")
+
+  def quickInflate(self):
+    self.sendByte("99\r")
+
+  def emgcyDeflate(self):
+    self.sendByte("98\r")
+
+  def closeAllValves2(self):
+    self.sendByte("70\r")
 
   def keyPressEvent(self, event: QKeyEvent) -> None:
     print(event.text())
@@ -255,6 +292,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
       self.steer_right()
     elif event.text() == 'h':
       self.halt()
+    elif event.text() == 'x':
+      self.quickInflate()
+    elif event.text() == 'z':
+      self.emgcyDeflate()
+    elif event.text() == 'c':
+      self.closeAllValves2()
+
   
 
   # methods for testing the pneumatic valves
